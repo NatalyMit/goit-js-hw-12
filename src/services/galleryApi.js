@@ -1,0 +1,23 @@
+import axios from 'axios';
+
+const BASE_URL = 'https://pixabay.com';
+const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
+const ENDPOINT = 'api';
+
+function getGallery(query) {
+  return axios
+    .get(`${BASE_URL}/${ENDPOINT}`, {
+      params: {
+        key: API_KEY,
+        q: query,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: 'true',
+        per_page: 40,
+        page: 1,
+      },
+    })
+    .then(({ data }) => data);
+}
+
+export { getGallery };

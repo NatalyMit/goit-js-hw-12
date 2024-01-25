@@ -8,7 +8,31 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <section></section>
+    <section>
+      <form class="form-search">
+        <div class="form-div">
+          <input
+            type="text"
+            class="form-input"
+            placeholder="search image"
+            name="query"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Search image</button>
+      </form>
+    </section>
+    <section>
+      <ul class="gallery-images"></ul>
+
+      <button
+        type="button"
+        class="btn js-btn-more is-hidden"
+        data-action="load-more"
+      >
+        <span class="loader"></span>
+        <span class="label">Load more</span>
+      </button>
+    </section>
 
     <script type="module" src="./main.js"></script>
   </body>
