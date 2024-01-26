@@ -45,6 +45,7 @@ async function handleSearch(event) {
   try {
     const { hits, totalHits } = await getGallery(query);
     if (!totalHits) {
+      refs.loadMoreEl.classList.add(hiddenClass);
       iziToast.show({
         title: '❌',
         messageColor: 'white',
@@ -73,31 +74,30 @@ async function handleSearch(event) {
   } finally {
     form.reset();
   }
-}
 
-async function handleLoadMore() {
-  page += 1;
-  refs.preloader.classList.remove(hiddenClass);
-  refs.loadMoreEl.disabled = true;
-  try {
-    const { hits } = await getGallery(query, page);
+  async function handleLoadMore() {
+    page += 1;
+    refs.preloader.classList.remove(hiddenClass);
+    refs.loadMoreEl.disabled = true;
+    try {
+      const { hits } = await getGallery(query, page);
 
-    createGallery(hits, refs.galleryEL);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    refs.preloader.classList.add(hiddenClass);
-    refs.loadMoreEl.disabled = false;
-    if (page === maxPage) {
-      refs.loadMoreEl.classList.add(hiddenClass);
-      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
-      iziToast.show({
-        title: '❌',
-        messageColor: 'white',
-        message: 'No more pictures for your request!',
-        position: 'bottomCenter',
-        color: 'red',
-      });
+      createGallery(hits, refs.galleryEL);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      refs.preloader.classList.add(hiddenClass);
+      refs.loadMoreEl.disabled = false;
+      if (page === maxPage) {
+        refs.loadMoreEl.classList.add(hiddenClass);
+        iziToast.show({
+          title: '❌',
+          messageColor: 'white',
+          message: "We're sorry, but you've reached the end of search results.",
+          position: 'bottomCenter',
+          color: 'red',
+        });
+      }
     }
   }
 }
