@@ -1,6 +1,5 @@
-import axios from 'axios';
-import createGallery from './templates/articles';
-import { getGallery } from './services/galleryApi';
+import createGallery from './templates/articles.js';
+import { getGallery } from './services/galleryApi.js';
 
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
@@ -13,7 +12,9 @@ const refs = {
   loadMoreEl: document.querySelector('[data-action="load-more"]'),
   preloader: document.getElementById('preloader'),
 };
-
+const lightbox = new SimpleLightbox('.gallery-images a', {
+  captionDelay: 250,
+});
 const hiddenClass = 'is-hidden';
 let query = '';
 let page = 1;
@@ -31,17 +32,26 @@ async function handleSearch(event) {
   query = form.elements.query.value.trim();
 
   if (!query) {
+    iziToast.show({
+      title: '❌',
+      messageColor: 'white',
+      message: 'Sorry, You have not entered any word.Please try again!',
+      position: 'topRight',
+      color: 'red',
+    });
     return;
   }
 
   try {
     const { hits, totalHits } = await getGallery(query);
+
     console.log(totalHits);
     maxPage = Math.ceil(totalHits / 40);
     console.log(maxPage);
-    createGallery(hits, refs.galleryEL);
 
-    if (hits.length > 0) {
+    createGallery(hits, refs.galleryEL);
+    lightbox.refresh();
+    if (hits.length > 0 && hits.length !== totalHits) {
       refs.loadMoreEl.classList.remove(hiddenClass);
       refs.loadMoreEl.addEventListener('click', handleLoadMore);
     } else {
@@ -63,12 +73,20 @@ async function handleLoadMore() {
 
     createGallery(hits, refs.galleryEL);
   } catch (error) {
-    console.log(err);
+    console.log(error);
   } finally {
     refs.preloader.classList.add(hiddenClass);
     refs.loadMoreEl.disabled = false;
     if (page === maxPage) {
       refs.loadMoreEl.classList.add(hiddenClass);
+      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
+      iziToast.show({
+        title: '❌',
+        messageColor: 'white',
+        message: 'No more pictures for your request!',
+        position: 'bottomCenter',
+        color: 'red',
+      });
     }
   }
 }
