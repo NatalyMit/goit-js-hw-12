@@ -16,9 +16,13 @@ const lightbox = new SimpleLightbox('.gallery-images a', {
   captionDelay: 250,
 });
 const hiddenClass = 'is-hidden';
-let query = '';
-let page = 1;
-let maxPage = 0;
+
+const queryParams = {
+  query: '',
+  page: 1,
+  maxPage: 0,
+  per_page: 40,
+};
 
 refs.formEl.addEventListener('submit', handleSearch);
 
@@ -26,12 +30,12 @@ async function handleSearch(event) {
   event.preventDefault();
 
   refs.galleryEL.innerHTML = '';
-  page = 1;
+  queryParams.page = 1;
 
   const form = event.currentTarget;
-  query = form.elements.query.value.trim();
+  queryParams.query = form.elements.query.value.trim();
 
-  if (!query) {
+  if (!queryParams.query) {
     iziToast.show({
       title: '❌',
       messageColor: 'white',
@@ -43,7 +47,7 @@ async function handleSearch(event) {
   }
 
   try {
-    const { hits, totalHits } = await getGallery(query);
+    const { hits, totalHits } = await getGallery(queryParams);
     if (!totalHits) {
       refs.loadMoreEl.classList.add(hiddenClass);
       iziToast.show({
@@ -56,9 +60,8 @@ async function handleSearch(event) {
       });
       return;
     }
-    console.log(totalHits);
-    maxPage = Math.ceil(totalHits / 40);
-    console.log(maxPage);
+
+    queryParams.maxPage = Math.ceil(totalHits / queryParams.pageSize);
 
     createGallery(hits, refs.galleryEL);
     lightbox.refresh();
@@ -76,11 +79,11 @@ async function handleSearch(event) {
   }
 
   async function handleLoadMore() {
-    page += 1;
+    queryParams.page += 1;
     refs.preloader.classList.remove(hiddenClass);
     refs.loadMoreEl.disabled = true;
     try {
-      const { hits } = await getGallery(query, page);
+      const { hits } = await getGallery(queryParams);
 
       createGallery(hits, refs.galleryEL);
     } catch (error) {
@@ -88,8 +91,9 @@ async function handleSearch(event) {
     } finally {
       refs.preloader.classList.add(hiddenClass);
       refs.loadMoreEl.disabled = false;
-      if (page === maxPage) {
+      if (queryParams.page === queryParams.maxPage) {
         refs.loadMoreEl.classList.add(hiddenClass);
+
         iziToast.show({
           title: 'Finish',
           messageColor: 'white',
