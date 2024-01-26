@@ -1,4 +1,9 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 export default function createGallery(arr, galleryEL) {
+  const lightbox = new SimpleLightbox('.gallery-images a', {
+    captionDelay: 250,
+  });
   const markup = arr
     .map(
       ({
@@ -23,4 +28,5 @@ export default function createGallery(arr, galleryEL) {
     .join('');
 
   galleryEL.insertAdjacentHTML('beforeend', markup);
+  lightbox.refresh();
 }

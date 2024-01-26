@@ -3,8 +3,6 @@ import { getGallery } from './services/galleryApi.js';
 
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
   formEl: document.querySelector('.form-search'),
@@ -12,9 +10,7 @@ const refs = {
   loadMoreEl: document.querySelector('[data-action="load-more"]'),
   preloader: document.getElementById('preloader'),
 };
-const lightbox = new SimpleLightbox('.gallery-images a', {
-  captionDelay: 250,
-});
+
 const hiddenClass = 'is-hidden';
 
 const queryParams = {
@@ -30,6 +26,7 @@ async function handleSearch(event) {
   event.preventDefault();
 
   refs.galleryEL.innerHTML = '';
+
   queryParams.page = 1;
 
   const form = event.currentTarget;
@@ -61,14 +58,23 @@ async function handleSearch(event) {
       return;
     }
 
-    queryParams.maxPage = Math.ceil(totalHits / queryParams.pageSize);
+    queryParams.maxPage = Math.ceil(totalHits / queryParams.per_page);
 
     createGallery(hits, refs.galleryEL);
-    lightbox.refresh();
 
     if (hits.length > 0 && hits.length !== totalHits) {
       refs.loadMoreEl.classList.remove(hiddenClass);
       refs.loadMoreEl.addEventListener('click', handleLoadMore);
+    } else if (!hits.length) {
+      refs.loadMoreEl.classList.add(hiddenClass);
+
+      iziToast.error({
+        title: 'Error',
+        titleSize: '30',
+        messageSize: '25',
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+      });
     } else {
       refs.loadMoreEl.classList.add(hiddenClass);
     }
@@ -81,7 +87,13 @@ async function handleSearch(event) {
   async function handleLoadMore() {
     queryParams.page += 1;
     refs.preloader.classList.remove(hiddenClass);
+    refs.loadMoreEl.classList.add(hiddenClass);
     refs.loadMoreEl.disabled = true;
+
+    const getHeightImgCard = document
+      .querySelector('.list-item')
+      .getBoundingClientRect();
+
     try {
       const { hits } = await getGallery(queryParams);
 
@@ -89,11 +101,19 @@ async function handleSearch(event) {
     } catch (error) {
       console.log(error);
     } finally {
+      window.scrollBy({
+        top: getHeightImgCard.height * 2,
+        left: 0,
+        behavior: 'smooth',
+      });
+
       refs.preloader.classList.add(hiddenClass);
       refs.loadMoreEl.disabled = false;
+      refs.loadMoreEl.classList.remove(hiddenClass);
+
       if (queryParams.page === queryParams.maxPage) {
         refs.loadMoreEl.classList.add(hiddenClass);
-
+        refs.loadMoreEl.removeEventListener('click', handleLoadMore);
         iziToast.show({
           title: 'Finish',
           messageColor: 'white',
@@ -101,7 +121,6 @@ async function handleSearch(event) {
           position: 'bottomCenter',
           color: 'blue',
         });
-        refs.loadMoreEl.removeEventListener('click', handleLoadMore);
       }
     }
   }
