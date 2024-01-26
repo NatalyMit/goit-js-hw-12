@@ -51,6 +51,7 @@ async function handleSearch(event) {
 
     createGallery(hits, refs.galleryEL);
     lightbox.refresh();
+
     if (hits.length > 0 && hits.length !== totalHits) {
       refs.loadMoreEl.classList.remove(hiddenClass);
       refs.loadMoreEl.addEventListener('click', handleLoadMore);
