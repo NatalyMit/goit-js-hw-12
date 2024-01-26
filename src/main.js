@@ -91,12 +91,13 @@ async function handleSearch(event) {
       if (page === maxPage) {
         refs.loadMoreEl.classList.add(hiddenClass);
         iziToast.show({
-          title: '❌',
+          title: 'Finish',
           messageColor: 'white',
           message: "We're sorry, but you've reached the end of search results.",
           position: 'bottomCenter',
-          color: 'red',
+          color: 'blue',
         });
+        refs.loadMoreEl.removeEventListener('click', handleLoadMore);
       }
     }
   }
