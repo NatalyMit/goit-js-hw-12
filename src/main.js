@@ -44,7 +44,17 @@ async function handleSearch(event) {
 
   try {
     const { hits, totalHits } = await getGallery(query);
-
+    if (!totalHits) {
+      iziToast.show({
+        title: '❌',
+        messageColor: 'white',
+        message:
+          'Sorry, we dont have any pictures for your request.Please try again!',
+        position: 'topRight',
+        color: 'red',
+      });
+      return;
+    }
     console.log(totalHits);
     maxPage = Math.ceil(totalHits / 40);
     console.log(maxPage);
