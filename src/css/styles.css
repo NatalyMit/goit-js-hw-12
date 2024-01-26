@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 1.5;
   font-weight: 400;
 
   color: #242424;
@@ -45,11 +45,14 @@ button {
   color: #fff;
   cursor: pointer;
   border: none;
+  border-radius: 8px;
 }
 button:hover {
   background: #6c8cff;
 }
-
+button:disabled {
+  background-color: #b8b5b5;
+}
 img {
   display: block;
   width: 360px;
@@ -126,10 +129,16 @@ form.form-search {
   border-radius: 8px;
 }
 /*  Настройки класса прячущейся кнопки*/
-.is-hidden {
-  display: inline;
+.js-btn-more {
+  margin-top: 40px;
+  margin-left: 45%;
 }
-
+.is-hidden {
+  display: none;
+}
+/* .js-btn-more > .loader.is-hidden {
+  display: none;
+} */
 /* Настройки для загрузки */
 
 .loader {

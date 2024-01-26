@@ -4,7 +4,7 @@ const BASE_URL = 'https://pixabay.com';
 const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
 const ENDPOINT = 'api';
 
-function getGallery(query) {
+function getGallery(query, page = 1) {
   return axios
     .get(`${BASE_URL}/${ENDPOINT}`, {
       params: {
@@ -14,7 +14,7 @@ function getGallery(query) {
         orientation: 'horizontal',
         safesearch: 'true',
         per_page: 40,
-        page: 1,
+        page,
       },
     })
     .then(({ data }) => data);
