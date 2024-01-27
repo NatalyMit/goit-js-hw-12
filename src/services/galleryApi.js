@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function getGallery({ query, page = 1, per_page }) {
+async function getGallery({ query, page = 1 }) {
   const BASE_URL = 'https://pixabay.com';
   const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
   const ENDPOINT = 'api/';
@@ -12,7 +12,7 @@ async function getGallery({ query, page = 1, per_page }) {
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: 'true',
-        per_page,
+        per_page: 40,
         page,
       },
     });

@@ -35,14 +35,14 @@ a {
 
 button {
   height: 40px;
-  background: #4e75ff;
+  background: #258596;
   color: #fff;
   cursor: pointer;
   border: none;
   border-radius: 8px;
 }
 button:hover {
-  background: #6c8cff;
+  background: #55a3e3;
 }
 button:disabled {
   background-color: #b8b5b5;
@@ -53,7 +53,14 @@ img {
   height: 200px;
   box-sizing: border-box;
 }
-
+.find-image {
+  padding: 20px 40px 20px 40px;
+  background-image: url(../img/nature-bg.jpg);
+  /* background-position: center; */
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 20%;
+}
 form.form-search {
   display: flex;
   align-items: center;
@@ -68,15 +75,32 @@ form.form-search {
 .form-input {
   width: 272px;
   height: 40px;
-  padding-left: 16px;
+  background-color: #fff;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  padding-left: 0 16px;
   border-radius: 4px;
   border: 1px solid #808080;
+  line-height: 1.5;
+  letter-spacing: 0.64px;
+  padding-left: 8px;
 }
 .form-input:hover {
   border: 1px solid #000;
 }
 .form-input:active {
   border: 1px solid #4e75ff;
+}
+.btn-primary {
+  transition: 1s;
+}
+.btn-primary:hover {
+  transform: translate(0, -2px);
+}
+.get-image {
+  padding: 20px 20px;
 }
 .gallery-images {
   display: flex;
@@ -86,23 +110,31 @@ form.form-search {
   align-items: center;
   background: #fff;
 }
+/* .gallery-image:hover {
+ 
+} */
 
 .list-item {
-  background-color: #fff;
-  border-radius: 0px 0px 4px 4px;
+  flex-direction: calc((100% - 48px) / 3);
+  height: auto;
+
+  border-radius: 4px 4px 4px 4px;
   box-shadow: 0px 1px 6px rgba(46, 47, 66, 0.08),
     0px 1px 1px rgba(46, 47, 66, 0.16), 0px 2px 1px rgba(46, 47, 66, 0.08);
+  transition: 2s;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.list-item:hover {
+  transform: scale(1.02);
 }
 .search-image {
   display: block;
   max-width: 360px;
+  overflow: hidden;
   object-fit: cover;
-  transition: 2s;
+  /* transition: 2s; */
   cursor: pointer;
-}
-
-.gallery-image:hover {
-  transform: scale(1.02);
 }
 
 .options {
@@ -110,6 +142,10 @@ form.form-search {
   gap: 10px;
   align-content: center;
   justify-content: space-between;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
 }
 .options-item {
   display: flex;
@@ -127,13 +163,15 @@ form.form-search {
 .js-btn-more {
   margin-top: 40px;
   margin-left: 45%;
+  transition: 1s;
+}
+.js-btn-more:hover {
+  transform: scale(1.02);
 }
 .is-hidden {
   display: none;
 }
-/* .js-btn-more > .loader.is-hidden {
-  display: none;
-} */
+
 /* Настройки для загрузки */
 
 .loader {
@@ -184,5 +222,64 @@ form.form-search {
   }
   100% {
     clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0);
+  }
+}
+/* Настройка лоадера для галереи*/
+.loader-gallery {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+.loader-gallery::before,
+.loader-gallery::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 48em;
+  height: 48em;
+  background-image: radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0),
+    radial-gradient(circle 10px, #fff 100%, transparent 0);
+  background-position: 0em -18em, 0em 18em, 18em 0em, -18em 0em, 13em -13em,
+    -13em -13em, 13em 13em, -13em 13em;
+  background-repeat: no-repeat;
+  font-size: 0.5px;
+  border-radius: 50%;
+  animation: blast 1s ease-in infinite;
+}
+.loader-gallery::after {
+  font-size: 1px;
+  background: #fff;
+  animation: bounce 1s ease-in infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    font-size: 0.75px;
+  }
+  50% {
+    font-size: 1.5px;
+  }
+}
+@keyframes blast {
+  0%,
+  40% {
+    font-size: 0.5px;
+  }
+  70% {
+    opacity: 1;
+    font-size: 4px;
+  }
+  100% {
+    font-size: 6px;
+    opacity: 0;
   }
 }

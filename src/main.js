@@ -9,6 +9,7 @@ const refs = {
   galleryEL: document.querySelector('.gallery-images'),
   loadMoreEl: document.querySelector('[data-action="load-more"]'),
   preloader: document.getElementById('preloader'),
+  loaderGallery: document.querySelector('.loader-gallery'),
 };
 
 const hiddenClass = 'is-hidden';
@@ -17,7 +18,6 @@ const queryParams = {
   query: '',
   page: 1,
   maxPage: 0,
-  per_page: 40,
 };
 
 refs.formEl.addEventListener('submit', handleSearch);
@@ -27,18 +27,21 @@ async function handleSearch(event) {
 
   refs.galleryEL.innerHTML = '';
 
+  refs.loaderGallery.classList.remove(hiddenClass);
+
   queryParams.page = 1;
 
   const form = event.currentTarget;
   queryParams.query = form.elements.query.value.trim();
 
   if (!queryParams.query) {
+    refs.loaderGallery.classList.add(hiddenClass);
     iziToast.show({
       title: '❌',
       messageColor: 'white',
       message: 'Sorry, You have not entered any word.Please try again!',
       position: 'topRight',
-      color: 'red',
+      color: 'yellow',
     });
     return;
   }
@@ -52,19 +55,19 @@ async function handleSearch(event) {
         messageColor: 'white',
         message:
           'Sorry, we dont have any pictures for your request.Please try again!',
+        messageSize: '25',
         position: 'topRight',
-        color: 'red',
+        color: 'yellow',
       });
       return;
     }
 
-    queryParams.maxPage = Math.ceil(totalHits / queryParams.per_page);
+    queryParams.maxPage = Math.ceil(totalHits / 40);
 
     createGallery(hits, refs.galleryEL);
 
     if (hits.length > 0 && hits.length !== totalHits) {
       refs.loadMoreEl.classList.remove(hiddenClass);
-      refs.loadMoreEl.addEventListener('click', handleLoadMore);
     } else if (!hits.length) {
       refs.loadMoreEl.classList.add(hiddenClass);
 
@@ -81,10 +84,23 @@ async function handleSearch(event) {
   } catch (error) {
     console.log(err);
   } finally {
+    refs.loaderGallery.classList.add(hiddenClass);
     form.reset();
   }
 
-  async function handleLoadMore() {
+  refs.loadMoreEl.addEventListener('click', async function handleLoadMore() {
+    if (queryParams.page === queryParams.maxPage) {
+      refs.loadMoreEl.classList.add(hiddenClass);
+      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
+      iziToast.show({
+        title: 'Finish',
+        messageColor: 'white',
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'bottomCenter',
+        color: 'blue',
+      });
+      return;
+    }
     queryParams.page += 1;
     refs.preloader.classList.remove(hiddenClass);
     refs.loadMoreEl.classList.add(hiddenClass);
@@ -110,18 +126,6 @@ async function handleSearch(event) {
       refs.preloader.classList.add(hiddenClass);
       refs.loadMoreEl.disabled = false;
       refs.loadMoreEl.classList.remove(hiddenClass);
-
-      if (queryParams.page === queryParams.maxPage) {
-        refs.loadMoreEl.classList.add(hiddenClass);
-        refs.loadMoreEl.removeEventListener('click', handleLoadMore);
-        iziToast.show({
-          title: 'Finish',
-          messageColor: 'white',
-          message: "We're sorry, but you've reached the end of search results.",
-          position: 'bottomCenter',
-          color: 'blue',
-        });
-      }
     }
-  }
+  });
 }

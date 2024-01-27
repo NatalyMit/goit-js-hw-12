@@ -5,10 +5,16 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home-work_12</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <section>
+    <section class="find-image">
       <form class="form-search">
         <div class="form-div">
           <input
@@ -20,8 +26,10 @@
         </div>
         <button type="submit" class="btn btn-primary">Search image</button>
       </form>
+
+      <span class="loader-gallery is-hidden"></span>
     </section>
-    <section>
+    <section class="get-image">
       <ul class="gallery-images"></ul>
       <span class="loader is-hidden" id="preloader"></span>
       <button
