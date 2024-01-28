@@ -14,11 +14,9 @@ const refs = {
 
 const hiddenClass = 'is-hidden';
 
-const queryParams = {
-  query: '',
-  page: 1,
-  maxPage: 0,
-};
+let query = '';
+let page = 1;
+let maxPage = 0;
 
 refs.formEl.addEventListener('submit', handleSearch);
 
@@ -29,13 +27,14 @@ async function handleSearch(event) {
 
   refs.loaderGallery.classList.remove(hiddenClass);
 
-  queryParams.page = 1;
+  page = 1;
 
   const form = event.currentTarget;
-  queryParams.query = form.elements.query.value.trim();
+  query = form.elements.query.value.trim();
 
-  if (!queryParams.query) {
+  if (!query) {
     refs.loaderGallery.classList.add(hiddenClass);
+    refs.loadMoreEl.classList.add(hiddenClass);
     iziToast.show({
       title: '❌',
       messageColor: 'white',
@@ -47,8 +46,8 @@ async function handleSearch(event) {
   }
 
   try {
-    const { hits, totalHits } = await getGallery(queryParams);
-    if (!totalHits) {
+    const { hits, totalHits } = await getGallery(query, page, maxPage);
+    if (hits.length === 0) {
       refs.loadMoreEl.classList.add(hiddenClass);
       iziToast.show({
         title: '❌',
@@ -62,22 +61,13 @@ async function handleSearch(event) {
       return;
     }
 
-    queryParams.maxPage = Math.ceil(totalHits / 40);
+    maxPage = Math.ceil(totalHits / 40);
 
     createGallery(hits, refs.galleryEL);
 
     if (hits.length > 0 && hits.length !== totalHits) {
       refs.loadMoreEl.classList.remove(hiddenClass);
-    } else if (!hits.length) {
-      refs.loadMoreEl.classList.add(hiddenClass);
-
-      iziToast.error({
-        title: 'Error',
-        titleSize: '30',
-        messageSize: '25',
-        message:
-          'Sorry, there are no images matching your search query. Please try again!',
-      });
+      refs.loadMoreEl.addEventListener('click', handleLoadMore);
     } else {
       refs.loadMoreEl.classList.add(hiddenClass);
     }
@@ -88,8 +78,8 @@ async function handleSearch(event) {
     form.reset();
   }
 
-  refs.loadMoreEl.addEventListener('click', async function handleLoadMore() {
-    if (queryParams.page === queryParams.maxPage) {
+  async function handleLoadMore() {
+    if (page === maxPage) {
       refs.loadMoreEl.classList.add(hiddenClass);
       refs.loadMoreEl.removeEventListener('click', handleLoadMore);
       iziToast.show({
@@ -99,9 +89,10 @@ async function handleSearch(event) {
         position: 'bottomCenter',
         color: 'blue',
       });
+
       return;
     }
-    queryParams.page += 1;
+    page += 1;
     refs.preloader.classList.remove(hiddenClass);
     refs.loadMoreEl.classList.add(hiddenClass);
     refs.loadMoreEl.disabled = true;
@@ -111,7 +102,7 @@ async function handleSearch(event) {
       .getBoundingClientRect();
 
     try {
-      const { hits } = await getGallery(queryParams);
+      const { hits } = await getGallery(query, page, maxPage);
 
       createGallery(hits, refs.galleryEL);
     } catch (error) {
@@ -127,5 +118,5 @@ async function handleSearch(event) {
       refs.loadMoreEl.disabled = false;
       refs.loadMoreEl.classList.remove(hiddenClass);
     }
-  });
+  }
 }
