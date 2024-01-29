@@ -16,7 +16,7 @@ async function getGallery(query, page = 1) {
         page,
       },
     });
-    console.log(response);
+
     return response.data;
   } catch (error) {
     iziToast.error({

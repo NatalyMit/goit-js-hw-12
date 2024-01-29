@@ -80,14 +80,14 @@ async function handleSearch(event) {
 
   async function handleLoadMore() {
     page += 1;
-    console.log(maxPage);
+
     refs.preloader.classList.remove(hiddenClass);
     refs.loadMoreEl.classList.add(hiddenClass);
     refs.loadMoreEl.disabled = true;
 
     if (page === maxPage) {
       refs.loadMoreEl.classList.add(hiddenClass);
-      refs.loadMoreEl.addEventListener('click', handleLoadMore);
+
       iziToast.show({
         title: 'Finish',
         messageColor: 'white',
@@ -117,7 +117,6 @@ async function handleSearch(event) {
       refs.preloader.classList.add(hiddenClass);
       refs.loadMoreEl.disabled = false;
       refs.loadMoreEl.classList.remove(hiddenClass);
-      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
     }
   }
 }
