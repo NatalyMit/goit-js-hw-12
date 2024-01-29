@@ -1,5 +1,5 @@
-import createGallery from './templates/articles.js';
-import { getGallery } from './services/galleryApi.js';
+import createGallery from './createMarkup/articles.js';
+import { getGallery } from './js/galleryApi.js';
 
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
@@ -46,7 +46,7 @@ async function handleSearch(event) {
   }
 
   try {
-    const { hits, totalHits } = await getGallery(query, page, maxPage);
+    const { hits, totalHits } = await getGallery(query, page);
     if (hits.length === 0) {
       refs.loadMoreEl.classList.add(hiddenClass);
       iziToast.show({
@@ -63,7 +63,7 @@ async function handleSearch(event) {
 
     maxPage = Math.ceil(totalHits / 40);
 
-    createGallery(hits, refs.galleryEL);
+    createGallery(hits);
 
     if (hits.length > 0 && hits.length !== totalHits) {
       refs.loadMoreEl.classList.remove(hiddenClass);
@@ -79,9 +79,15 @@ async function handleSearch(event) {
   }
 
   async function handleLoadMore() {
+    page += 1;
+    console.log(maxPage);
+    refs.preloader.classList.remove(hiddenClass);
+    refs.loadMoreEl.classList.add(hiddenClass);
+    refs.loadMoreEl.disabled = true;
+
     if (page === maxPage) {
       refs.loadMoreEl.classList.add(hiddenClass);
-      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
+      refs.loadMoreEl.addEventListener('click', handleLoadMore);
       iziToast.show({
         title: 'Finish',
         messageColor: 'white',
@@ -89,22 +95,16 @@ async function handleSearch(event) {
         position: 'bottomCenter',
         color: 'blue',
       });
-
-      return;
     }
-    page += 1;
-    refs.preloader.classList.remove(hiddenClass);
-    refs.loadMoreEl.classList.add(hiddenClass);
-    refs.loadMoreEl.disabled = true;
 
     const getHeightImgCard = document
       .querySelector('.list-item')
       .getBoundingClientRect();
 
     try {
-      const { hits } = await getGallery(query, page, maxPage);
+      const { hits } = await getGallery(query, page);
 
-      createGallery(hits, refs.galleryEL);
+      createGallery(hits);
     } catch (error) {
       console.log(error);
     } finally {
@@ -117,6 +117,7 @@ async function handleSearch(event) {
       refs.preloader.classList.add(hiddenClass);
       refs.loadMoreEl.disabled = false;
       refs.loadMoreEl.classList.remove(hiddenClass);
+      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
     }
   }
 }

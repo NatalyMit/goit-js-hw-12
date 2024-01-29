@@ -1,11 +1,12 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-export default function createGallery(arr, galleryEL) {
-  const lightbox = new SimpleLightbox('.gallery-images a', {
-    captionDelay: 250,
-  });
+const galleryEL = document.querySelector('.gallery-images');
+const lightbox = new SimpleLightbox('.gallery-images a', {
+  captionDelay: 250,
+});
 
+export default function createGallery(arr) {
   const markup = arr
     .map(
       ({

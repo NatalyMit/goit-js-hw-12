@@ -102,8 +102,9 @@ form.form-search {
 .get-image {
   padding: 20px 20px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 .gallery-images {
   display: flex;
@@ -113,9 +114,6 @@ form.form-search {
   align-items: center;
   background: #fff;
 }
-/* .gallery-image:hover {
- 
-} */
 
 .list-item {
   flex-direction: calc((100% - 48px) / 3);
@@ -165,7 +163,7 @@ form.form-search {
 /*  Настройки класса прячущейся кнопки*/
 .js-btn-more {
   margin-top: 40px;
-  margin-left: 45%;
+
   transition: 1s;
 }
 .js-btn-more:hover {
@@ -183,7 +181,7 @@ form.form-search {
   border-radius: 50%;
   position: relative;
   animation: rotate 1s linear infinite;
-  margin-left: 50%;
+  margin-top: 30px;
 }
 .loader::before,
 .loader::after {
@@ -192,11 +190,11 @@ form.form-search {
   position: absolute;
   inset: 0px;
   border-radius: 50%;
-  border: 5px solid #fff;
+  border: 5px solid #169bcb;
   animation: prixClipFix 2s linear infinite;
 }
 .loader::after {
-  border-color: #ff3d00;
+  border-color: #6cc1f3;
   animation: prixClipFix 2s linear infinite, rotate 0.5s linear infinite reverse;
   inset: 6px;
 }
@@ -231,7 +229,8 @@ form.form-search {
 .loader-gallery {
   width: 48px;
   height: 48px;
-  position: relative;
+  /* position: relative; */
+  margin-left: 50%;
 }
 .loader-gallery::before,
 .loader-gallery::after {
@@ -242,14 +241,14 @@ form.form-search {
   transform: translate(-50%, -50%);
   width: 48em;
   height: 48em;
-  background-image: radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0),
-    radial-gradient(circle 10px, #fff 100%, transparent 0);
+  background-image: radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0),
+    radial-gradient(circle 10px, #77cff5 100%, transparent 0);
   background-position: 0em -18em, 0em 18em, 18em 0em, -18em 0em, 13em -13em,
     -13em -13em, 13em 13em, -13em 13em;
   background-repeat: no-repeat;
@@ -259,7 +258,7 @@ form.form-search {
 }
 .loader-gallery::after {
   font-size: 1px;
-  background: #fff;
+  background: #77cff5;
   animation: bounce 1s ease-in infinite;
 }
 
