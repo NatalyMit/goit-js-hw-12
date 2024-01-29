@@ -46,7 +46,7 @@ async function handleSearch(event) {
   }
 
   try {
-    const { hits, totalHits } = await getGallery(query, page);
+    const { hits, totalHits } = await getGallery(query);
     if (hits.length === 0) {
       refs.loadMoreEl.classList.add(hiddenClass);
       iziToast.show({
@@ -81,18 +81,6 @@ async function handleSearch(event) {
   async function handleLoadMore() {
     page += 1;
 
-    if (page === maxPage) {
-      refs.loadMoreEl.classList.add(hiddenClass);
-
-      iziToast.show({
-        title: 'Finish',
-        messageColor: 'white',
-        message: "We're sorry, but you've reached the end of search results.",
-        position: 'bottomCenter',
-        color: 'blue',
-      });
-    }
-
     refs.preloader.classList.remove(hiddenClass);
     refs.loadMoreEl.classList.add(hiddenClass);
     refs.loadMoreEl.disabled = true;
@@ -117,6 +105,18 @@ async function handleSearch(event) {
       refs.preloader.classList.add(hiddenClass);
       refs.loadMoreEl.disabled = false;
       refs.loadMoreEl.classList.remove(hiddenClass);
+
+      if (page === maxPage) {
+        refs.loadMoreEl.classList.add(hiddenClass);
+        refs.loadMoreEl.removeEventListener('click', handleLoadMore);
+        iziToast.show({
+          title: 'Finish',
+          messageColor: 'white',
+          message: "We're sorry, but you've reached the end of search results.",
+          position: 'bottomCenter',
+          color: 'blue',
+        });
+      }
     }
   }
 }
