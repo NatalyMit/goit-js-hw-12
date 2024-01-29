@@ -81,10 +81,6 @@ async function handleSearch(event) {
   async function handleLoadMore() {
     page += 1;
 
-    refs.preloader.classList.remove(hiddenClass);
-    refs.loadMoreEl.classList.add(hiddenClass);
-    refs.loadMoreEl.disabled = true;
-
     if (page === maxPage) {
       refs.loadMoreEl.classList.add(hiddenClass);
 
@@ -96,6 +92,10 @@ async function handleSearch(event) {
         color: 'blue',
       });
     }
+
+    refs.preloader.classList.remove(hiddenClass);
+    refs.loadMoreEl.classList.add(hiddenClass);
+    refs.loadMoreEl.disabled = true;
 
     const getHeightImgCard = document
       .querySelector('.list-item')
