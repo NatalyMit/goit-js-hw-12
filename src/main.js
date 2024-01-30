@@ -24,7 +24,7 @@ async function handleSearch(event) {
   event.preventDefault();
 
   refs.galleryEL.innerHTML = '';
-
+  refs.loadMoreEl.classList.add(hiddenClass);
   refs.loaderGallery.classList.remove(hiddenClass);
 
   page = 1;
@@ -77,46 +77,45 @@ async function handleSearch(event) {
     refs.loaderGallery.classList.add(hiddenClass);
     form.reset();
   }
+}
+async function handleLoadMore() {
+  page += 1;
 
-  async function handleLoadMore() {
-    page += 1;
+  refs.preloader.classList.remove(hiddenClass);
+  refs.loadMoreEl.classList.add(hiddenClass);
+  refs.loadMoreEl.disabled = true;
 
-    refs.preloader.classList.remove(hiddenClass);
-    refs.loadMoreEl.classList.add(hiddenClass);
-    refs.loadMoreEl.disabled = true;
+  const getHeightImgCard = document
+    .querySelector('.list-item')
+    .getBoundingClientRect();
 
-    const getHeightImgCard = document
-      .querySelector('.list-item')
-      .getBoundingClientRect();
+  try {
+    const { hits } = await getGallery(query, page);
 
-    try {
-      const { hits } = await getGallery(query, page);
+    createGallery(hits);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    window.scrollBy({
+      top: getHeightImgCard.height * 2,
+      left: 0,
+      behavior: 'smooth',
+    });
 
-      createGallery(hits);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      window.scrollBy({
-        top: getHeightImgCard.height * 2,
-        left: 0,
-        behavior: 'smooth',
+    refs.preloader.classList.add(hiddenClass);
+    refs.loadMoreEl.disabled = false;
+    refs.loadMoreEl.classList.remove(hiddenClass);
+
+    if (page === maxPage) {
+      refs.loadMoreEl.classList.add(hiddenClass);
+      refs.loadMoreEl.removeEventListener('click', handleLoadMore);
+      iziToast.show({
+        title: 'Finish',
+        messageColor: 'white',
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'bottomCenter',
+        color: 'blue',
       });
-
-      refs.preloader.classList.add(hiddenClass);
-      refs.loadMoreEl.disabled = false;
-      refs.loadMoreEl.classList.remove(hiddenClass);
-
-      if (page === maxPage) {
-        refs.loadMoreEl.classList.add(hiddenClass);
-        refs.loadMoreEl.removeEventListener('click', handleLoadMore);
-        iziToast.show({
-          title: 'Finish',
-          messageColor: 'white',
-          message: "We're sorry, but you've reached the end of search results.",
-          position: 'bottomCenter',
-          color: 'blue',
-        });
-      }
     }
   }
 }
